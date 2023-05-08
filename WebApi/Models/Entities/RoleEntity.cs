@@ -9,4 +9,5 @@ public class RoleEntity
 
     [Column(TypeName = "nvarchar(100)")]
     public string RoleName { get; set; } = null!;
+    public ICollection<UserEntity> Users { get; set; } = new HashSet<UserEntity>();
 }

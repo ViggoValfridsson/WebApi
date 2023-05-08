@@ -18,8 +18,8 @@
 
   <ItemGroup>
     <Folder Include="Controllers\" />
-    <Folder Include="Models\Entities\" />
     <Folder Include="Models\Dtos\" />
+    <Folder Include="Models\Schemas\" />
   </ItemGroup>
 
 </Project>

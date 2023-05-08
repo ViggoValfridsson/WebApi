@@ -46,9 +46,16 @@ public abstract class Repo<TEntity> where TEntity : class
 
     public virtual async Task<IEnumerable<TEntity>> GetAllAsync()
     {
-        var entities = await _context.Set<TEntity>().ToListAsync();
+        try
+        {
+            var entities = await _context.Set<TEntity>().ToListAsync();
 
-        return entities;
+            return entities;
+        }
+        catch
+        {
+            throw new ApiException(HttpStatusCode.BadGateway, "An error occured when fetching the resource. Please try again.");
+        }
     }
 
     public virtual async Task<IEnumerable<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate)
@@ -63,7 +70,6 @@ public abstract class Repo<TEntity> where TEntity : class
         {
             throw new ApiException(HttpStatusCode.BadGateway, "An error occured when fetching the resource. Please try again.");
         }
-
     }
 
     public virtual async Task<TEntity> UpdateAsync(TEntity entity)

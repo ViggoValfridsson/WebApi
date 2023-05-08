@@ -23,5 +23,7 @@ public class DataContext : DbContext
                   .WithOne(u => u.Role)
                   .HasForeignKey(u => u.RoleId)
                   .OnDelete(DeleteBehavior.Restrict);
+
+        // No such restriction is necessary for groups/users/groupusers since if a group or user is deleted you also want the value in the join table to be removed
     }
 }

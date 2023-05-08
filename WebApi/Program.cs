@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using WebApi.Data;
+using WebApi.Helpers.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,10 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer(builder.Configuration.GetConnectionString("Sql")));
 
 // Repositories
+builder.Services.AddScoped<GroupRepo>();
+builder.Services.AddScoped<RoleRepo>();
+builder.Services.AddScoped<UserGroupsRepo>();
+builder.Services.AddScoped<UserRepo>();
 
 // Services
 

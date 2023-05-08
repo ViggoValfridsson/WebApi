@@ -19,5 +19,5 @@ public class UserEntity
     public string Email { get; set; } = null!;
     public int RoleId { get; set; }
     public RoleEntity Role { get; set; } = null!;
-    public ICollection<UserGroupEntity> Groups { get; set; } = new HashSet<UserGroupEntity>();
+    public ICollection<UserGroupsEntity> Groups { get; set; } = new HashSet<UserGroupsEntity>();
 }

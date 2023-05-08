@@ -3,7 +3,7 @@
 namespace WebApi.Models.Entities;
 
 [PrimaryKey(nameof(UserId), nameof(GroupId))]
-public class UserGroupEntity
+public class UserGroupsEntity
 {
     public Guid UserId { get; set; }
     public UserEntity User { get; set; } = null!;

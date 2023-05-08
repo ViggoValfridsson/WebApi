@@ -9,5 +9,5 @@ public class GroupEntity
 
     [Column(TypeName = "nvarchar(100)")]
     public string GroupName { get; set; } = null!;
-    public ICollection<UserGroupEntity> Users { get; set; } = new HashSet<UserGroupEntity>();
+    public ICollection<UserGroupsEntity> Users { get; set; } = new HashSet<UserGroupsEntity>();
 }

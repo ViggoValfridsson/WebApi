@@ -27,7 +27,7 @@ public class UserService
         return entity!;
     }
 
-    public async Task<UserDto?> GetAsync(Expression<Func<UserEntity, bool>> predicate, int? groupId = null)
+    public async Task<UserDto?> GetAsync(Expression<Func<UserEntity, bool>> predicate)
     {
         var entity = await _userRepo.GetAsync(predicate);
 
@@ -85,13 +85,9 @@ public class UserService
 
     }
 
-    // delete
     public async Task DeleteAsync(Guid userId)
     {
-        var user = await _userRepo.GetAsync(x => x.Id == userId);
-
-        if (user == null)
-            throw new ApiException(HttpStatusCode.NotFound, "No entity with that id could be found.");
+        var user = await _userRepo.GetAsync(x => x.Id == userId) ?? throw new ApiException(HttpStatusCode.NotFound, "No entity with that id could be found.");
 
         await _userRepo.DeleteAsync(user);
     }

@@ -19,6 +19,30 @@ public class UsersController : ControllerBase
         _userService = userService;
     }
 
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(string id)
+    {
+        try
+        {
+            var guid = Guid.Parse(id);
+            var user = await _userService.GetAsync(x => x.Id == guid);
+
+            if (user == null)
+                return NotFound("Could not find a user with that id");
+
+            return Ok(user);
+        }
+        catch (FormatException)
+        {
+            return BadRequest("Invalid id format. The id should consist of 32 hexadecimal digits separated by hyphens.");
+        }
+        catch (ApiException ex)
+        {
+            return StatusCode((int)ex.StatusCode, ex.ErrorMessage);
+        }
+    }
+
+
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
@@ -34,35 +58,23 @@ public class UsersController : ControllerBase
     }
 
 
-    [HttpGet("{groupId}")]
-    public async Task<IActionResult> GetAll(int groupId)
-    {
-        try
-        {
-            var users = await _userService.GetAllASync(groupId);
 
-            if (users == null)
-                return NotFound("Could not find any users. Either the group is empty or it doesn't exist.");
 
-            return Ok(users);
-        }
-        catch (ApiException ex)
-        {
-            return StatusCode((int)ex.StatusCode, ex.ErrorMessage);
-        }
-    }
-
-    //[HttpGet("users")]
-    //public async Task<IActionResult> GetUser([FromQuery] string id = null!, [FromQuery] string email = null!)
+    //[HttpGet("{groupId}")]
+    //public async Task<IActionResult> GetAll(int groupId)
     //{
     //    try
     //    {
-    //        var users = await _userService.GetAllASync();
+    //        var users = await _userService.GetAllASync(groupId);
+
+    //        if (users == null)
+    //            return NotFound("Could not find any users. Either the group is empty or it doesn't exist.");
+
     //        return Ok(users);
     //    }
     //    catch (ApiException ex)
     //    {
-    //        return StatusCode((int)ex.StatusCode, ex.Message);
+    //        return StatusCode((int)ex.StatusCode, ex.ErrorMessage);
     //    }
     //}
 }

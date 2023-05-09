@@ -16,6 +16,18 @@ public class GroupRepo : Repo<GroupEntity>
         _context = context;
     }
 
+    public async Task<bool> AnyAsync(int id)
+    {
+        try
+        {
+            return await _context.Groups.AnyAsync(x => x.Id == id);
+        }
+        catch
+        {
+            throw new ApiException(HttpStatusCode.BadGateway, "An error occured when fetching the resource. Please try again.");
+        }
+    }
+
     public override async Task<GroupEntity?> GetAsync(Expression<Func<GroupEntity, bool>> predicate)
     {
         try

@@ -13,16 +13,42 @@ public class UserService
 {
     private readonly UserRepo _userRepo;
     private readonly GroupRepo _groupRepo;
+    private readonly RoleRepo _roleRepo;
+    private readonly UserGroupsService _userGroupsService;
 
-    public UserService(UserRepo userRepo, GroupRepo groupRepo)
+    public UserService(UserRepo userRepo, GroupRepo groupRepo, RoleRepo roleRepo, UserGroupsRepo userGroupsRepo, UserGroupsService userGroupsService)
     {
         _userRepo = userRepo;
         _groupRepo = groupRepo;
+        _roleRepo = roleRepo;
+        _userGroupsService = userGroupsService;
     }
 
     public async Task<UserDto> CreateAsync(UserCreateSchema schema)
     {
+        // Checks if role exists 
+        if (!(await _roleRepo.AnyAsync(schema.RoleId)))
+            throw new ApiException(HttpStatusCode.BadRequest, "The specified role was not found in the database. Make sure that the role id is correct and try again.");
+
+        // Checks if all groupsIds are valid
+        foreach (var groupId in schema.GroupIds)
+        {
+            if (!(await _groupRepo.AnyAsync(groupId)))
+                throw new ApiException(HttpStatusCode.BadRequest, "One or more of the specified groups in the request could not be found. Make sure that all group ids are correct and try again.");
+        }
+
+        // Checks if email is in use
+        if (await GetAsync(x => x.Email == schema.Email.ToLower()) != null)
+            throw new ApiException(HttpStatusCode.Conflict, "The specified email address is already in use. Please try again with another email address.");
+
+
         var entity = await _userRepo.CreateAsync(schema);
+
+        foreach (var groupId in schema.GroupIds)
+            await _userGroupsService.CreateAsync(groupId, entity.Id);
+
+        // Get to get all includes/join data before returning the users
+        entity = await _userRepo.GetAsync(x => x.Id == entity.Id);
 
         return entity!;
     }

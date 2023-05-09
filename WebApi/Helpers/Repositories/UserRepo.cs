@@ -36,7 +36,7 @@ public class UserRepo : Repo<UserEntity>
     {
         try
         {
-            var entities = await _context.Users.Include(x => x.Role).ToListAsync();
+            var entities = await _context.Users.Include(x => x.Role).Include(x => x.Groups).ThenInclude(x => x.Group).ToListAsync();
 
             return entities;
         }

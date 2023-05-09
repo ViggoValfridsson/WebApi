@@ -12,10 +12,12 @@ namespace WebApi.Helpers.Services;
 public class UserService
 {
     private readonly UserRepo _userRepo;
+    private readonly GroupRepo _groupRepo;
 
-    public UserService(UserRepo userRepo)
+    public UserService(UserRepo userRepo, GroupRepo groupRepo)
     {
         _userRepo = userRepo;
+        _groupRepo = groupRepo;
     }
 
     public async Task<UserDto> CreateAsync(UserCreateSchema schema)
@@ -25,7 +27,7 @@ public class UserService
         return entity!;
     }
 
-    public async Task<UserDto?> GetAsync(Expression<Func<UserEntity, bool>> predicate)
+    public async Task<UserDto?> GetAsync(Expression<Func<UserEntity, bool>> predicate, int? groupId = null)
     {
         var entity = await _userRepo.GetAsync(predicate);
 
@@ -45,6 +47,21 @@ public class UserService
 
         foreach (var entity in entities)
             dtos.Add(entity!);
+
+        return dtos;
+    }
+
+    public async Task<IEnumerable<UserDto>> GetAllASync(int groupId)
+    {
+        var group = await _groupRepo.GetAsync(x => x.Id == groupId);
+
+        if (group == null)
+            return null!;
+
+        var dtos = new List<UserDto>();
+
+        foreach (var userGroups in group.Users)
+            dtos.Add(userGroups.User!);
 
         return dtos;
     }
@@ -71,7 +88,7 @@ public class UserService
     // delete
     public async Task DeleteAsync(Guid userId)
     {
-        var user = await _userRepo.GetAsync(x => x.Id ==  userId);
+        var user = await _userRepo.GetAsync(x => x.Id == userId);
 
         if (user == null)
             throw new ApiException(HttpStatusCode.NotFound, "No entity with that id could be found.");

@@ -20,7 +20,7 @@ public class GroupRepo : Repo<GroupEntity>
     {
         try
         {
-            var entity = await _context.Groups.Include(x => x.Users).ThenInclude(x => x.User).FirstOrDefaultAsync(predicate);
+            var entity = await _context.Groups.Include(x => x.Users).ThenInclude(x => x.User).ThenInclude(user => user.Role).FirstOrDefaultAsync(predicate);
 
             return entity;
         }

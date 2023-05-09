@@ -171,7 +171,7 @@ public class UsersController : ControllerBase
     {
         if (ModelState.IsValid)
         {
-
+            // kolla ifall nya group listan innehåller nya group id annars radera.
         }
 
         return BadRequest("Not a valid schema. Please try again.");

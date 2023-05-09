@@ -13,13 +13,11 @@ public class UserService
 {
     private readonly UserRepo _userRepo;
     private readonly GroupRepo _groupRepo;
-    private readonly UserGroupsService _userGroupsService;
 
-    public UserService(UserRepo userRepo, GroupRepo groupRepo, UserGroupsRepo userGroupsRepo, UserGroupsService userGroupsService)
+    public UserService(UserRepo userRepo, GroupRepo groupRepo, UserGroupsRepo userGroupsRepo)
     {
         _userRepo = userRepo;
         _groupRepo = groupRepo;
-        _userGroupsService = userGroupsService;
     }
 
     public async Task<UserDto> CreateAsync(UserCreateSchema schema)

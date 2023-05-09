@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
 using System.Net;
+using System.Text.RegularExpressions;
 using WebApi.Helpers.Services;
 using WebApi.Models.Entities;
 using WebApi.Models.Exceptions;
@@ -42,8 +43,29 @@ public class UsersController : ControllerBase
         }
     }
 
-
     [HttpGet]
+    public async Task<IActionResult> GetByEmail(string email)
+    {
+        try
+        {
+            if (Regex.IsMatch(email, @"^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$"))
+                return BadRequest("Not a valid email address.");
+
+            var user = await _userService.GetAsync(x => x.Email == email);
+
+            if (user == null)
+                return NotFound("Could not find a user with that email address");
+
+            return Ok(user);
+        }
+        catch (ApiException ex)
+        {
+            return StatusCode((int)ex.StatusCode, ex.ErrorMessage);
+        }
+    }
+
+
+    [HttpGet("all")]
     public async Task<IActionResult> GetAll()
     {
         try
@@ -59,7 +81,7 @@ public class UsersController : ControllerBase
 
 
 
-
+    // ändra bara pathen
     //[HttpGet("{groupId}")]
     //public async Task<IActionResult> GetAll(int groupId)
     //{

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
 using System.Net;
 using System.Text.RegularExpressions;
+using WebApi.Helpers.Repositories;
 using WebApi.Helpers.Services;
 using WebApi.Models.Entities;
 using WebApi.Models.Exceptions;
@@ -15,10 +16,16 @@ namespace WebApi.Controllers;
 public class UsersController : ControllerBase
 {
     private readonly UserService _userService;
+    private readonly RoleRepo _roleRepo;
+    private readonly GroupRepo _groupRepo;
+    private readonly UserGroupsService _userGroupsService;
 
-    public UsersController(UserService userService)
+    public UsersController(UserService userService, RoleRepo roleRepo, GroupRepo groupRepo, UserGroupsService userGroupsService)
     {
         _userService = userService;
+        _roleRepo = roleRepo;
+        _groupRepo = groupRepo;
+        _userGroupsService = userGroupsService;
     }
 
     [HttpGet("{id}")]
@@ -125,7 +132,27 @@ public class UsersController : ControllerBase
         {
             try
             {
+                // Role is required for users therefore we need to make sure that the role is valid.
+                if (!(await _roleRepo.AnyAsync(schema.RoleId)))
+                    return BadRequest("The specified role was not found in the database. Make sure that the role id is correct and try again.");
+
+                // Check that all groups are valid before creating to avoid creating partial data.
+                foreach (var groupId in schema.GroupIds)
+                {
+                    if (!(await _groupRepo.AnyAsync(groupId)))
+                       return BadRequest("One or more of the specified groups in the request could not be found. Make sure that all group ids are correct and try again.");
+                }
+
+                if (await _userService.GetAsync(x => x.Email == schema.Email.ToLower()) != null)
+                   return Conflict("The specified email address is already in use. Please try again with another email address.");
+
+                // Created here so id is available to create userGroups
                 var user = await _userService.CreateAsync(schema);
+
+                foreach (var groupId in schema.GroupIds)
+                    await _userGroupsService.CreateAsync(groupId, user.Id);
+                
+                // Fetch data again so return includes newly added groups
                 user = await _userService.GetAsync(x => x.Id == user.Id);
 
                 return Created("", user);
@@ -134,6 +161,17 @@ public class UsersController : ControllerBase
             {
                 return StatusCode((int)ex.StatusCode, ex.ErrorMessage);
             }
+        }
+
+        return BadRequest("Not a valid schema. Please try again.");
+    }
+
+    [HttpPut("update")]
+    public async Task<IActionResult> Update(UserUpdateSchema schema)
+    {
+        if (ModelState.IsValid)
+        {
+
         }
 
         return BadRequest("Not a valid schema. Please try again.");

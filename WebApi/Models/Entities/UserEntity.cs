@@ -33,9 +33,11 @@ public class UserEntity
             FirstName = entity.FirstName,
             LastName = entity.LastName,
             Email = entity.Email,
-            Role = entity.Role.RoleName,
             Id = entity.Id
         };
+
+        if (entity.Role != null)
+            dto.Role = entity.Role.RoleName;
 
         foreach (var userGroups in entity.Groups)
             dto.Groups.Add(userGroups.Group.GroupName);

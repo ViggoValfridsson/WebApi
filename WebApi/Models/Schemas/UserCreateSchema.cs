@@ -10,13 +10,13 @@ public class UserCreateSchema
     [Required]
     [MinLength(2)]
     [MaxLength(100)]
-    [RegularExpression(@"^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$")]
+    [RegularExpression(@"^[a-öA-Ö]+(([',. -][a-öA-Ö ])?[a-öA-Ö]*)*$")]
     public string FirstName { get; set; } = null!;
 
     [Required]
     [MinLength(2)]
     [MaxLength(100)]
-    [RegularExpression(@"^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$")]
+    [RegularExpression(@"^[a-öA-Ö]+(([',. -][a-öA-Ö ])?[a-öA-Ö]*)*$")]
     public string LastName { get; set; } = null!;
 
     [Required]

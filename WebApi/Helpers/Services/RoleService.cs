@@ -1,9 +1,7 @@
 ﻿using System.Linq.Expressions;
-using System.Net;
 using WebApi.Helpers.Repositories;
 using WebApi.Models.Dtos;
 using WebApi.Models.Entities;
-using WebApi.Models.Exceptions;
 using WebApi.Models.Schemas;
 
 namespace WebApi.Helpers.Services;
@@ -34,7 +32,6 @@ public class RoleService
     public async Task<IEnumerable<RoleDto>> GetAllASync()
     {
         var entities = await _roleRepo.GetAllAsync();
-
         var dtos = new List<RoleDto>();
 
         foreach (var entity in entities)

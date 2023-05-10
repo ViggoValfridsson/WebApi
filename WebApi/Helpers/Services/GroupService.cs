@@ -32,7 +32,6 @@ public class GroupService
     public async Task<IEnumerable<GroupWithoutUsersDto>> GetAllASync()
     {
         var entities = await _groupRepo.GetAllAsync();
-
         var dtos = new List<GroupWithoutUsersDto>();
 
         foreach (var entity in entities)

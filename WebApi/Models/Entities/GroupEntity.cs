@@ -19,7 +19,8 @@ public class GroupEntity
 
         var dto = new GroupWithUsersDto
         {
-           GroupName = entity.GroupName
+            Id = entity.Id,
+            GroupName = entity.GroupName
         };
 
         foreach (var userGroup in entity.Users)
@@ -35,6 +36,7 @@ public class GroupEntity
 
         var dto = new GroupWithoutUsersDto
         {
+            Id = entity.Id,
             GroupName = entity.GroupName
         };
 

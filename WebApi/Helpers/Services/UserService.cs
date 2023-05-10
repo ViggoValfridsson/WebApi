@@ -84,14 +84,12 @@ public class UserService
             foreach (var currentUserGroup in currentUserGroups)
             {
                 if (!schema.GroupIds.Contains(currentUserGroup.GroupId))
-                {
                     await _userGroupsRepo.DeleteAsync(currentUserGroup);
-                }
             }
 
             await _userRepo.UpdateAsync(schema);
 
-            // Converts UserGroupEntities to ints for easier comparisons later
+            // Converts UserGroupEntities to ints for easier comparisons
             var currentGroupIds = new List<int>();
 
             // fetches group data again in case anything was deleted previously
@@ -102,7 +100,7 @@ public class UserService
 
             foreach (var groupId in schema.GroupIds)
             {
-                // If user doesn't have the group it is added here
+                // If user doesn't have the group it is added to the database here
                 if (!currentGroupIds.Contains(groupId))
                     await _userGroupsService.CreateAsync(groupId, schema.Id);
             }

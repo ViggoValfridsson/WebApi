@@ -17,6 +17,10 @@ public class DataContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<UserEntity>()
+            .HasIndex(x => x.Email)
+            .IsUnique();
+
         // To prevent accidental deletion of data it cannot be deleted if it has users.
         modelBuilder.Entity<RoleEntity>()
                   .HasMany(r => r.Users)

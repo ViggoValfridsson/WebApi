@@ -4,7 +4,7 @@ A simple web API made with ASP.NET Core and Entity Framework Core.
 
 ## About
 
-The API contains three controllers. UsersController, GroupsController and RoleController.
+The API consists of three regular entities and one association table.
 
 ## Running the API
 

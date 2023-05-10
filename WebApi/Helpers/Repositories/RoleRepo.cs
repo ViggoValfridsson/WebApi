@@ -27,18 +27,4 @@ public class RoleRepo : Repo<RoleEntity>
             throw new ApiException(HttpStatusCode.BadGateway, "An error occured when fetching the resource. Please try again.");
         }
     }
-
-    public override async Task<RoleEntity?> GetAsync(Expression<Func<RoleEntity, bool>> predicate)
-    {
-        try
-        {
-            var entity = await _context.Roles.Include(x => x.Users).FirstOrDefaultAsync(predicate);
-
-            return entity;
-        }
-        catch
-        {
-            throw new ApiException(HttpStatusCode.BadGateway, "An error occured when fetching the resource. Please try again.");
-        }
-    }
 }

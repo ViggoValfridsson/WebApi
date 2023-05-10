@@ -17,7 +17,7 @@ public class RoleService
         _roleRepo = roleRepo;
     }
 
-    public async Task<RoleDto> CreateAsync(RoleCreateSchema schema)
+    public async Task<RoleDto> CreateAsync(GroupOrRoleCreateSchema schema)
     {
         var entity = await _roleRepo.CreateAsync(schema);
 
@@ -43,7 +43,7 @@ public class RoleService
         return dtos;
     }
 
-    public async Task<RoleDto> UpdateAsync(RoleUpdateSchema schema)
+    public async Task<RoleDto> UpdateAsync(GroupOrRoleUpdateSchema schema)
     {
         var entity = await _roleRepo.UpdateAsync(schema);
         return entity;
@@ -51,8 +51,8 @@ public class RoleService
 
     public async Task DeleteAsync(Expression<Func<RoleEntity, bool>> predicate)
     {
-        var user = await _roleRepo.GetAsync(predicate);
+        var role = await _roleRepo.GetAsync(predicate);
 
-        await _roleRepo.DeleteAsync(user!);
+        await _roleRepo.DeleteAsync(role!);
     }
 }

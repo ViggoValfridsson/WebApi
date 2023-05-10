@@ -23,12 +23,12 @@ public class UserEntity
     public RoleEntity Role { get; set; } = null!;
     public ICollection<UserGroupsEntity> Groups { get; set; } = new HashSet<UserGroupsEntity>();
 
-    public static implicit operator UserDto?(UserEntity entity)
+    public static implicit operator UserWithGroupsDto?(UserEntity entity)
     {
         if (entity == null)
             return null;
 
-        var dto = new UserDto
+        var dto = new UserWithGroupsDto
         {
             FirstName = entity.FirstName,
             LastName = entity.LastName,
@@ -44,6 +44,25 @@ public class UserEntity
             if (userGroups.Group.GroupName != null)
                 dto.Groups.Add(userGroups.Group.GroupName);
         }
+
+        return dto;
+    }
+
+    public static implicit operator UserWithoutGroupsDto?(UserEntity entity)
+    {
+        if (entity == null)
+            return null;
+
+        var dto = new UserWithoutGroupsDto
+        {
+            FirstName = entity.FirstName,
+            LastName = entity.LastName,
+            Email = entity.Email,
+            Id = entity.Id
+        };
+
+        if (entity.Role != null)
+            dto.Role = entity.Role.RoleName;
 
         return dto;
     }

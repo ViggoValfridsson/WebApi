@@ -75,7 +75,7 @@ public class RolesController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(RoleCreateSchema schema)
+    public async Task<IActionResult> Create(GroupOrRoleCreateSchema schema)
     {
         try
         {
@@ -95,7 +95,7 @@ public class RolesController : ControllerBase
     }
 
     [HttpPut]
-    public async Task<IActionResult> Update(RoleUpdateSchema schema)
+    public async Task<IActionResult> Update(GroupOrRoleUpdateSchema schema)
     {
         try
         {

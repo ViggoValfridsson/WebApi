@@ -144,7 +144,7 @@ public class UsersController : ControllerBase
                         return BadRequest("One or more of the specified groups in the request could not be found. Make sure that all group ids are correct and try again.");
                 }
 
-                if (await _userService.GetAsync(x => x.Email == schema.Email.ToLower()) != null)
+                if (await _userService.AnyAsync(x => x.Email == schema.Email))
                     return Conflict("The specified email address is already in use. Please try again with another email address.");
 
                 // Created here so id is available to create userGroups
@@ -167,7 +167,7 @@ public class UsersController : ControllerBase
         return BadRequest("Not a valid schema. Please try again.");
     }
 
-    [HttpPut("update")]
+    [HttpPut]
     public async Task<IActionResult> Update(UserUpdateSchema schema)
     {
         if (ModelState.IsValid)
@@ -192,5 +192,49 @@ public class UsersController : ControllerBase
         }
 
         return BadRequest("Not a valid schema. Please try again.");
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteById(string id)
+    {
+        try
+        {
+            var guid = Guid.Parse(id);
+            if (!(await _userService.AnyAsync(x => x.Id == guid)))
+                return NotFound("Could not find a user to delete. Please make sure your id is valid and try again.");
+
+            await _userService.DeleteAsync(x => x.Id == guid);
+            return NoContent();
+        }
+        catch (FormatException)
+        {
+            return BadRequest("Invalid id format. The id should consist of 32 hexadecimal digits separated by hyphens.");
+        }
+        catch (ApiException ex)
+        {
+            return StatusCode((int)ex.StatusCode, ex.ErrorMessage);
+        }
+    }
+
+
+    [HttpDelete]
+    public async Task<IActionResult> DeleteByEmail(string email)
+    {
+        try
+        {
+            if (!(await _userService.AnyAsync(x => x.Email == email)))
+                return NotFound("Could not find a user to delete. Please make sure your id is valid and try again.");
+
+            await _userService.DeleteAsync(x => x.Email == email);
+            return NoContent();
+        }
+        catch (FormatException)
+        {
+            return BadRequest("Invalid id format. The id should consist of 32 hexadecimal digits separated by hyphens.");
+        }
+        catch (ApiException ex)
+        {
+            return StatusCode((int)ex.StatusCode, ex.ErrorMessage);
+        }
     }
 }

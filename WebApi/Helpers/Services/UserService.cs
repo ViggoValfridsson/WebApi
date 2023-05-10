@@ -104,7 +104,7 @@ public class UserService
             {
                 // If user doesn't have the group it is added here
                 if (!currentGroupIds.Contains(groupId))
-                    await _userGroupsService.CreateAsync(groupId, schema.Id);       
+                    await _userGroupsService.CreateAsync(groupId, schema.Id);
             }
         }
         catch (ApiException ex)
@@ -118,10 +118,10 @@ public class UserService
 
     }
 
-    public async Task DeleteAsync(Guid userId)
+    public async Task DeleteAsync(Expression<Func<UserEntity, bool>> predicate)
     {
-        var user = await _userRepo.GetAsync(x => x.Id == userId) ?? throw new ApiException(HttpStatusCode.NotFound, "No entity with that id could be found.");
+        var user = await _userRepo.GetAsync(predicate);
 
-        await _userRepo.DeleteAsync(user);
+        await _userRepo.DeleteAsync(user!);
     }
 }

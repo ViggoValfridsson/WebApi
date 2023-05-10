@@ -111,8 +111,8 @@ public class UsersController : ControllerBase
         {
             var users = await _userService.GetAllASync(x => x.RoleId == roleId);
 
-            if (users == null)
-                return NotFound("Could not find any users. Either the group is empty or it doesn't exist.");
+            if (!(users.Any()))
+                return NotFound("Could not find any users. Either the role is empty or it doesn't exist.");
 
             return Ok(users);
         }
@@ -143,7 +143,7 @@ public class UsersController : ControllerBase
                 if (await _userService.AnyAsync(x => x.Email == schema.Email))
                     return Conflict("The specified email address is already in use. Please try again with another email address.");
 
-                // Created here so id is available to create userGroups
+                // Created here so id is available later to create userGroups
                 var user = await _userService.CreateAsync(schema);
 
                 foreach (var groupId in schema.GroupIds)
@@ -168,9 +168,11 @@ public class UsersController : ControllerBase
     {
         if (ModelState.IsValid)
         {
+            // Check for valid role to prevent exceptions caused by FK constraints
             if (!(await _roleRepo.AnyAsync(schema.RoleId)))
                 return BadRequest("The specified role was not found in the database. Make sure that the role id is correct and try again.");
 
+            // check that roles are valid 
             foreach (var groupId in schema.GroupIds)
             {
                 if (!(await _groupRepo.AnyAsync(groupId)))
@@ -181,6 +183,7 @@ public class UsersController : ControllerBase
                 return NotFound("Could not find a user to update. Please make sure your id is valid and try again.");
 
             await _userService.UpdateAsync(schema);
+
             // fetch user here to get all updated information as well as all includes
             var user = await _userService.GetAsync(x => x.Id == schema.Id);
 
@@ -196,6 +199,7 @@ public class UsersController : ControllerBase
         try
         {
             var guid = Guid.Parse(id);
+
             if (!(await _userService.AnyAsync(x => x.Id == guid)))
                 return NotFound("Could not find a user to delete. Please make sure your id is valid and try again.");
 

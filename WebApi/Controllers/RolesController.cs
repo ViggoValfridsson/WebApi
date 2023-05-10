@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Text.RegularExpressions;
 using WebApi.Helpers.Repositories;
 using WebApi.Helpers.Services;
 using WebApi.Models.Exceptions;
@@ -65,7 +64,7 @@ public class RolesController : ControllerBase
         {
             var roles  = await _roleService.GetAllASync();
 
-            if (roles.Count() < 1 || roles == null)
+            if (!(roles.Any()) || roles == null)
                 return NotFound("No roles could be found in the database.");
 
             return Ok(roles);
@@ -130,6 +129,7 @@ public class RolesController : ControllerBase
             // gets all users in role
             var users = await _userService.GetAllASync(x => x.RoleId == id);
 
+            // Trying to delete a role that has users is not possible because of foreign key contraints
             if (users.Any())
                 return Conflict("Role is not empty and can therefore not be deleted. Remove all users from role and try again.");
 

@@ -16,6 +16,18 @@ public class RoleRepo : Repo<RoleEntity>
         _context = context;
     }
 
+    public async Task<bool> AnyAsync(int id)
+    {
+        try
+        {
+            return await _context.Roles.AnyAsync(x => x.Id == id);
+        }
+        catch
+        {
+            throw new ApiException(HttpStatusCode.BadGateway, "An error occured when fetching the resource. Please try again.");
+        }
+    }
+
     public override async Task<RoleEntity?> GetAsync(Expression<Func<RoleEntity, bool>> predicate)
     {
         try

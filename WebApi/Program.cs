@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using WebApi.Data;
 using WebApi.Helpers.Repositories;
+using WebApi.Helpers.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,8 @@ builder.Services.AddScoped<UserGroupsRepo>();
 builder.Services.AddScoped<UserRepo>();
 
 // Services
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<UserGroupsService>();
 
 var app = builder.Build();
 

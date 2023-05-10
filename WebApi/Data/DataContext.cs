@@ -24,6 +24,7 @@ public class DataContext : DbContext
                   .HasForeignKey(u => u.RoleId)
                   .OnDelete(DeleteBehavior.Restrict);
 
-        // No such restriction is necessary for groups/users/groupusers since if a group or user is deleted you also want the value in the join table to be removed
+        // No such restriction is necessary for groups/users/userGroups since if a group or user is deleted you also want the value in the join table to be removed.
+        // This will not result in deletions cascading between groups and users.
     }
 }

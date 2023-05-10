@@ -43,7 +43,7 @@ public class GroupService
 
     public async Task UpdateAsync(GroupOrRoleUpdateSchema schema)
     {
-        var entity = await _groupRepo.UpdateAsync(schema);
+        await _groupRepo.UpdateAsync(schema);
     }
 
     public async Task DeleteAsync(Expression<Func<GroupEntity, bool>> predicate)

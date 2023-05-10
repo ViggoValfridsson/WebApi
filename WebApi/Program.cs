@@ -24,6 +24,7 @@ builder.Services.AddScoped<UserRepo>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<UserGroupsService>();
 builder.Services.AddScoped<RoleService>();
+builder.Services.AddScoped<GroupService>();
 
 var app = builder.Build();
 

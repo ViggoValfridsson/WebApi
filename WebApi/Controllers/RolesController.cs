@@ -13,11 +13,13 @@ public class RolesController : ControllerBase
 {
     private readonly RoleService _roleService;
     private readonly RoleRepo _roleRepo;
+    private readonly UserService _userService; 
 
-    public RolesController(RoleService roleService, RoleRepo roleRepo)
+    public RolesController(RoleService roleService, RoleRepo roleRepo, UserService userService)
     {
         _roleService = roleService;
         _roleRepo = roleRepo;
+        _userService = userService;
     }
 
     [HttpGet("{id}")]
@@ -75,7 +77,7 @@ public class RolesController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(RoleCreateSchema schema)
+    public async Task<IActionResult> Create(GroupOrRoleCreateSchema schema)
     {
         try
         {
@@ -95,7 +97,7 @@ public class RolesController : ControllerBase
     }
 
     [HttpPut]
-    public async Task<IActionResult> Update(RoleUpdateSchema schema)
+    public async Task<IActionResult> Update(GroupOrRoleUpdateSchema schema)
     {
         try
         {
@@ -125,9 +127,13 @@ public class RolesController : ControllerBase
             if (!(await _roleRepo.AnyAsync(id)))
                 return NotFound("No role with the specified id could be found.");
 
-            var user = await _roleRepo.GetAsync(x => x.Id == id);
+            // gets all users in role
+            var users = await _userService.GetAllASync(x => x.RoleId == id);
 
-            await _roleRepo.DeleteAsync(user!);
+            if (users.Any())
+                return Conflict("Role is not empty and can therefore not be deleted. Remove all users from role and try again.");
+
+            await _roleService.DeleteAsync(x => x.Id == id);
 
             return NoContent();
         }

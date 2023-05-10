@@ -29,21 +29,21 @@ public class UserService
         return await _userRepo.AnyAsync(predicate);
     }
 
-    public async Task<UserDto> CreateAsync(UserCreateSchema schema)
+    public async Task<UserWithGroupsDto> CreateAsync(UserCreateSchema schema)
     {
         var entity = await _userRepo.CreateAsync(schema);
 
         return entity!;
     }
 
-    public async Task<UserDto?> GetAsync(Expression<Func<UserEntity, bool>> predicate)
+    public async Task<UserWithGroupsDto?> GetAsync(Expression<Func<UserEntity, bool>> predicate)
     {
         var entity = await _userRepo.GetAsync(predicate);
 
         return entity!;
     }
 
-    public async Task<IEnumerable<UserDto>> GetAllASync(Expression<Func<UserEntity, bool>> predicate = null!)
+    public async Task<IEnumerable<UserWithGroupsDto>> GetAllASync(Expression<Func<UserEntity, bool>> predicate = null!)
     {
         IEnumerable<UserEntity> entities;
 
@@ -52,7 +52,7 @@ public class UserService
         else
             entities = await _userRepo.GetAllAsync(predicate);
 
-        var dtos = new List<UserDto>();
+        var dtos = new List<UserWithGroupsDto>();
 
         foreach (var entity in entities)
             dtos.Add(entity!);
@@ -60,14 +60,14 @@ public class UserService
         return dtos;
     }
 
-    public async Task<IEnumerable<UserDto>> GetAllASync(int groupId)
+    public async Task<IEnumerable<UserWithGroupsDto>> GetAllASync(int groupId)
     {
         var group = await _groupRepo.GetAsync(x => x.Id == groupId);
 
         if (group == null)
             return null!;
 
-        var dtos = new List<UserDto>();
+        var dtos = new List<UserWithGroupsDto>();
 
         foreach (var userGroups in group.Users)
             dtos.Add(userGroups.User!);

@@ -64,7 +64,7 @@ public class RolesController : ControllerBase
         {
             var roles  = await _roleService.GetAllASync();
 
-            if (!(roles.Any()) || roles == null)
+            if (roles == null ||!(roles.Any()))
                 return NotFound("No roles could be found in the database.");
 
             return Ok(roles);

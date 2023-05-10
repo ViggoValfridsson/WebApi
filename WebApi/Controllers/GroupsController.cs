@@ -63,7 +63,7 @@ public class GroupsController : ControllerBase
         {
             var groups = await _groupService.GetAllASync();
 
-            if (!(groups.Any()) || groups == null)
+            if (groups == null || !(groups.Any()))
                 return NotFound("No groups could be found in the database.");
 
             return Ok(groups);

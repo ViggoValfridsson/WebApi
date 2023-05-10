@@ -1,11 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System.Linq.Expressions;
-using System.Net;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Text.RegularExpressions;
 using WebApi.Helpers.Repositories;
 using WebApi.Helpers.Services;
-using WebApi.Models.Entities;
 using WebApi.Models.Exceptions;
 using WebApi.Models.Schemas;
 
@@ -226,6 +222,7 @@ public class UsersController : ControllerBase
                 return NotFound("Could not find a user to delete. Please make sure your id is valid and try again.");
 
             await _userService.DeleteAsync(x => x.Email == email);
+
             return NoContent();
         }
         catch (FormatException)

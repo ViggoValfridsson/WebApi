@@ -23,6 +23,7 @@ builder.Services.AddScoped<UserRepo>();
 // Services
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<UserGroupsService>();
+builder.Services.AddScoped<RoleService>();
 
 var app = builder.Build();
 

@@ -76,6 +76,10 @@ public class UsersController : ControllerBase
         try
         {
             var users = await _userService.GetAllASync();
+
+            if (!(users.Any()))
+                return NotFound("No users in the database.");
+
             return Ok(users);
         }
         catch (ApiException ex)
@@ -92,7 +96,7 @@ public class UsersController : ControllerBase
         {
             var users = await _userService.GetAllASync(groupId);
 
-            if (users == null)
+            if (users == null || !(users.Any()))
                 return NotFound("Could not find any users. Either the group is empty or it doesn't exist.");
 
             return Ok(users);

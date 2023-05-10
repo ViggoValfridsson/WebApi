@@ -17,6 +17,10 @@ public class DataContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<UserEntity>()
+            .HasIndex(x => x.Email)
+            .IsUnique();
+
         // To prevent accidental deletion of data it cannot be deleted if it has users.
         modelBuilder.Entity<RoleEntity>()
                   .HasMany(r => r.Users)
@@ -24,6 +28,7 @@ public class DataContext : DbContext
                   .HasForeignKey(u => u.RoleId)
                   .OnDelete(DeleteBehavior.Restrict);
 
-        // No such restriction is necessary for groups/users/groupusers since if a group or user is deleted you also want the value in the join table to be removed
+        // No such restriction is necessary for groups/users/userGroups since if a group or user is deleted you also want the value in the join table to be removed.
+        // This will not result in deletions cascading between groups and users.
     }
 }

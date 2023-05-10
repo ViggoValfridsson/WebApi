@@ -26,6 +26,7 @@ public class UsersController : ControllerBase
         _roleRepo = roleRepo;
         _groupRepo = groupRepo;
         _userGroupsService = userGroupsService;
+
     }
 
     [HttpGet("{id}")]
@@ -140,18 +141,18 @@ public class UsersController : ControllerBase
                 foreach (var groupId in schema.GroupIds)
                 {
                     if (!(await _groupRepo.AnyAsync(groupId)))
-                       return BadRequest("One or more of the specified groups in the request could not be found. Make sure that all group ids are correct and try again.");
+                        return BadRequest("One or more of the specified groups in the request could not be found. Make sure that all group ids are correct and try again.");
                 }
 
                 if (await _userService.GetAsync(x => x.Email == schema.Email.ToLower()) != null)
-                   return Conflict("The specified email address is already in use. Please try again with another email address.");
+                    return Conflict("The specified email address is already in use. Please try again with another email address.");
 
                 // Created here so id is available to create userGroups
                 var user = await _userService.CreateAsync(schema);
 
                 foreach (var groupId in schema.GroupIds)
                     await _userGroupsService.CreateAsync(groupId, user.Id);
-                
+
                 // Fetch data again so return includes newly added groups
                 user = await _userService.GetAsync(x => x.Id == user.Id);
 
@@ -171,7 +172,23 @@ public class UsersController : ControllerBase
     {
         if (ModelState.IsValid)
         {
-            // kolla ifall nya group listan innehåller nya group id annars radera.
+            if (!(await _roleRepo.AnyAsync(schema.RoleId)))
+                return BadRequest("The specified role was not found in the database. Make sure that the role id is correct and try again.");
+
+            foreach (var groupId in schema.GroupIds)
+            {
+                if (!(await _groupRepo.AnyAsync(groupId)))
+                    return BadRequest("One or more of the specified groups in the request could not be found. Make sure that all group ids are correct and try again.");
+            }
+
+            if (!(await _userService.AnyAsync(x => x.Id == schema.Id)))
+                return NotFound("Could not find a user to update. Please make sure your id is valid and try again.");
+
+            await _userService.UpdateAsync(schema);
+            // fetch user here to get all updated information as well as all includes
+            var user = await _userService.GetAsync(x => x.Id == schema.Id);
+
+            return Ok(user);
         }
 
         return BadRequest("Not a valid schema. Please try again.");

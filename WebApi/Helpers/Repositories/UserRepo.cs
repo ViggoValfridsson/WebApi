@@ -60,5 +60,8 @@ public class UserRepo : Repo<UserEntity>
         }
     }
 
-
+    public async Task<bool> AnyAsync(Expression<Func<UserEntity, bool>> predicate)
+    {
+        return await _context.Users.AnyAsync(predicate);
+    }
 }

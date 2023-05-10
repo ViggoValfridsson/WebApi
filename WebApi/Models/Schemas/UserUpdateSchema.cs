@@ -37,6 +37,7 @@ public class UserUpdateSchema
 
         return new UserEntity
         {
+            Id = schema.Id,
             FirstName = schema.FirstName,
             LastName = schema.LastName,
             Email = schema.Email.ToLower(),

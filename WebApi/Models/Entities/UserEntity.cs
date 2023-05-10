@@ -40,7 +40,10 @@ public class UserEntity
             dto.Role = entity.Role.RoleName;
 
         foreach (var userGroups in entity.Groups)
-            dto.Groups.Add(userGroups.Group.GroupName);
+        {
+            if (userGroups.Group.GroupName != null)
+                dto.Groups.Add(userGroups.Group.GroupName);
+        }
 
         return dto;
     }

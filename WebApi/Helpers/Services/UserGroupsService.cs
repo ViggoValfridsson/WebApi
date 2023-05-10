@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Linq.Expressions;
+using System.Text.RegularExpressions;
 using WebApi.Helpers.Repositories;
 using WebApi.Models.Entities;
 
